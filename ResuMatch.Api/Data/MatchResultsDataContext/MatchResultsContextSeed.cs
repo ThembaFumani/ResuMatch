@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ResuMatch.Api.Data.MatchResults
+namespace ResuMatch.Api.Data.MatchResultsDataContext
 {
-    public interface IMatchResultsContext
+    public class MatchResultsContextSeed
     {
-        
     }
 }
