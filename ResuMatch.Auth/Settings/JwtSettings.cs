@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ResuMatch.Auth.Settings
 {
-    public class AuthOptions
+    public class JwtSettings
     {
         public string? Issuer { get; set; } = "";
         public string? Audience { get; set; } = "";
