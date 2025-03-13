@@ -8,7 +8,8 @@ namespace ResuMatch.Api.Models
 {
     public class MatchResult
     {
-        public int Score { get; set; }
+        public string? ResumeId { get; set; }
+        public double MatchPercentage { get; set; }
         public List<string>? MissingSkills { get; set; }
     }
 }
