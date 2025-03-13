@@ -14,7 +14,17 @@ namespace ResuMatch.Auth.Repositories
 
         public async Task<IdentityResult> AddUserToRoleAsync(IdentityUser user, string role)
         {
-            return await _userManager.AddToRoleAsync(user, role);   
+            var roleExists = await _roleManager.RoleExistsAsync(role);
+            
+            if (!roleExists)
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole(role));
+                if (!createRoleResult.Succeeded)
+                {
+                    return IdentityResult.Failed(new IdentityError { Description = $"Failed to create role {role}" });
+                }
+            }
+            return await _userManager.AddToRoleAsync(user, role);
         }
 
         public async Task<IdentityResult> CreateUserAsync(IdentityUser user, string password)

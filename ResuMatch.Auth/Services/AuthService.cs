@@ -1,10 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ResuMatch.Auth.Models;
 using ResuMatch.Auth.Repositories;
+using ResuMatch.Auth.Settings;
 
 namespace ResuMatch.Auth.Services
 {
@@ -13,12 +15,19 @@ namespace ResuMatch.Auth.Services
         private readonly IAuthRepository _authRepository;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<AuthService> _logger;
-        public AuthService(IAuthRepository authRepository, SignInManager<IdentityUser> signInManager, ILogger<AuthService> logger)
+        private readonly SecretClient _keyVaultClient;
+        public AuthService
+        (IAuthRepository authRepository, 
+        SignInManager<IdentityUser> signInManager, 
+        ILogger<AuthService> logger,
+        SecretClient keyVaultClient)
         {
             _authRepository = authRepository;
             _signInManager = signInManager;
             _logger = logger;
+            _keyVaultClient = keyVaultClient;
         }
+
         public async Task<JwtToken> LoginAsync(LoginModel model)
         {
             try
@@ -94,14 +103,15 @@ namespace ResuMatch.Auth.Services
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Role, "User")
                 };
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key"));
+                 
+                var secret = GetSecretFromKeyVault("JwtSecretKey").Result; 
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                 var expiration = DateTime.UtcNow.AddDays(1);
 
                 var token = new JwtSecurityToken(
-                    issuer: "ResuMatch",
-                    audience: "ResuMatch",
+                    issuer: null,
+                    audience: null,
                     claims: claims,
                     expires: expiration,
                     signingCredentials: creds
@@ -117,6 +127,20 @@ namespace ResuMatch.Auth.Services
             {
                 _logger.LogError(ex, $"Error during token generation: {ex.Message}");
                 throw;
+            }
+        }
+
+        private async Task<string> GetSecretFromKeyVault(string secretName)
+        {
+            try
+            {
+                var secret = await _keyVaultClient.GetSecretAsync(secretName);
+                return secret.Value.Value;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving secret {secretName} from Key Vault", secretName);
+                throw new Exception("Error retrieving secrets from Key Vault.");
             }
         }
     }
