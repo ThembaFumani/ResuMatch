@@ -7,10 +7,10 @@ using ResuMatch.Api.Models;
 
 namespace ResuMatch.Api.Data.MatchResultsDataContext
 {
-    public class MatchResultsContext : IMatchResultsContext
+    public class ResumesContext : IResumesContext
     {
         private readonly IConfiguration _configuration;
-        public MatchResultsContext(IConfiguration configuration)
+        public ResumesContext(IConfiguration configuration)
         {
             _configuration = configuration;
              var connectionStringKey = GetConnectionString();
@@ -18,8 +18,8 @@ namespace ResuMatch.Api.Data.MatchResultsDataContext
             var client = new MongoClient(connectionStringKey);
             var database = client.GetDatabase(configuration.GetValue<string>("DatabaseSettings:DatabaseName"));
                        
-            MatchResults = database.GetCollection<MatchResult>(configuration.GetValue<string>("DatabaseSettings:Collections:MatchResults"));
-            MatchResultsContextSeed.SeedData(MatchResults);
+            Resumes = database.GetCollection<Resume>(configuration.GetValue<string>("DatabaseSettings:Collections:Resumes"));
+            ResumesContextSeed.SeedData(Resumes);
         }
 
         private string GetConnectionString()
@@ -27,6 +27,6 @@ namespace ResuMatch.Api.Data.MatchResultsDataContext
             return _configuration.GetValue<string>("DatabaseSettings:ConnectionString:Dev");
         }
 
-        public IMongoCollection<MatchResult>? MatchResults { get; }
+        public IMongoCollection<Resume>? Resumes { get; }
     }
 }

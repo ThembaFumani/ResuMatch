@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using ResuMatch.Api.Models;
 
-namespace ResuMatch.Api.Data.MatchResultsDataContext
+namespace ResuMatch.Api.Data.JobDescriptionsDataContext
 {
-    public class MatchResultsContext : IMatchResultsContext
+    public class JobDescriptionsDataContext : IJobDescriptionsDataContext
     {
         private readonly IConfiguration _configuration;
-        public MatchResultsContext(IConfiguration configuration)
+        public JobDescriptionsDataContext(IConfiguration configuration)
         {
             _configuration = configuration;
              var connectionStringKey = GetConnectionString();
@@ -18,8 +18,8 @@ namespace ResuMatch.Api.Data.MatchResultsDataContext
             var client = new MongoClient(connectionStringKey);
             var database = client.GetDatabase(configuration.GetValue<string>("DatabaseSettings:DatabaseName"));
                        
-            MatchResults = database.GetCollection<MatchResult>(configuration.GetValue<string>("DatabaseSettings:Collections:MatchResults"));
-            MatchResultsContextSeed.SeedData(MatchResults);
+            JobDescriptions = database.GetCollection<JobDescription>(configuration.GetValue<string>("DatabaseSettings:Collections:JobDescriptions"));
+            JobDescriptionsDataContextSeed.SeedData(JobDescriptions);
         }
 
         private string GetConnectionString()
@@ -27,6 +27,6 @@ namespace ResuMatch.Api.Data.MatchResultsDataContext
             return _configuration.GetValue<string>("DatabaseSettings:ConnectionString:Dev");
         }
 
-        public IMongoCollection<MatchResult>? MatchResults { get; }
+        public IMongoCollection<JobDescription>? JobDescriptions { get; }
     }
 }

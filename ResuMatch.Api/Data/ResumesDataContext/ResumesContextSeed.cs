@@ -7,14 +7,14 @@ using ResuMatch.Api.Models;
 
 namespace ResuMatch.Api.Data.MatchResultsDataContext
 {
-    public class MatchResultsContextSeed
+    public class ResumesContextSeed
     {
-        internal static void SeedData(IMongoCollection<MatchResult> matchResults)
+        internal static void SeedData(IMongoCollection<Resume> resumes)
         {
-            SeedMatchResults(matchResults);
+            SeedMatchResults(resumes);
         }
 
-        private static void SeedMatchResults(IMongoCollection<MatchResult> matchResults)
+        private static void SeedMatchResults(IMongoCollection<Resume> resumes)
         {
             throw new NotImplementedException();
         }
