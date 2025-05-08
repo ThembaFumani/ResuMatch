@@ -14,18 +14,18 @@ namespace ResuMatch.Api.Repositories
     public class ResumeRepository : IResumeRepository
     {
          private readonly ILogger<ResumeRepository> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly OpenRouterConfig  _openRouterConfig;
         private readonly IResumeContext _context;
 
         public ResumeRepository(
             ILogger<ResumeRepository> logger,
-            HttpClient httpClient,
+            IHttpClientFactory httpClientFactory,
             IOptions<OpenRouterConfig> openRouterConfig,
             IResumeContext context)
         {
             _logger = logger;
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _openRouterConfig = openRouterConfig.Value;
             _context = context;
         }
@@ -69,7 +69,8 @@ namespace ResuMatch.Api.Repositories
 
             try
             {
-                var response = await _httpClient.PostAsync(_openRouterConfig.Endpoint, content);
+                using var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.PostAsync(_openRouterConfig.Endpoint, content);
                 if (!response.IsSuccessStatusCode)
                 {
                     string errorContent = await response.Content.ReadAsStringAsync();

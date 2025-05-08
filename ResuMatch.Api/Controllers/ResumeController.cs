@@ -26,7 +26,12 @@ namespace ResuMatch.Api.Controllers
 
             try
             {
-                var result = await _resumeAnalysisService?.ProcessResumeAsync(file, jobDescription);
+                if (_resumeAnalysisService == null)
+                {
+                    return StatusCode(500, "Resume analysis service is not available.");
+                }
+
+                var result = await _resumeAnalysisService.ProcessResumeAsync(file, jobDescription);
                 return Ok(result);
             }
             catch (Exception ex)

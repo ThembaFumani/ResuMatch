@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using ResuMatch.Api.Models.Configurations;
 using ResuMatch.Api.Services.Interfaces;
 
@@ -8,14 +9,14 @@ namespace ResuMatch.Api.Services.Concretes
     public class OpenRouterAIService : IAIService
     {
         private readonly ILogger<OpenRouterAIService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly OpenRouterConfig _openRouterConfig;
 
-        public OpenRouterAIService(ILogger<OpenRouterAIService> logger, HttpClient httpClient, OpenRouterConfig openRouterConfig)
+        public OpenRouterAIService(ILogger<OpenRouterAIService> logger, IHttpClientFactory httpClientFactory, IOptions<OpenRouterConfig> openRouterConfig)
         {
-            _openRouterConfig = openRouterConfig;
+            _openRouterConfig = openRouterConfig.Value;
             _logger = logger;
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<string> ExtractSkillsAsync(string jobDescription)
@@ -46,9 +47,9 @@ namespace ResuMatch.Api.Services.Concretes
 
             try
             {
-                using (var response = await _httpClient.PostAsync(_openRouterConfig.Endpoint, new StringContent(json, Encoding.UTF8, "application/json")))
-                {
-                    if (!response.IsSuccessStatusCode)
+                using var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.PostAsync(_openRouterConfig.Endpoint, new StringContent(json, Encoding.UTF8, "application/json"));
+                if (!response.IsSuccessStatusCode)
                     {
                         string errorContent = await response.Content.ReadAsStringAsync();
                         _logger.LogError("OpenRouter API error: {StatusCode} - {ErrorContent}", response.StatusCode, errorContent);
@@ -57,8 +58,8 @@ namespace ResuMatch.Api.Services.Concretes
 
                     string responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogDebug("OpenRouter API response: {ResponseContent}", responseContent);
-                    return responseContent; 
-                }
+                    return responseContent;
+                
             }
             catch (Exception ex)
             {

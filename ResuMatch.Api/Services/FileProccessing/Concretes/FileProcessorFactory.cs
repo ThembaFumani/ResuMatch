@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
 
 namespace ResuMatch.Api.Services.FileProccessing.Concretes
@@ -24,7 +20,7 @@ namespace ResuMatch.Api.Services.FileProccessing.Concretes
                 
                 // Add cases for other file types if needed
                 default:
-                    throw new UnsupportedFileTypeException($"File type '{fileExtension}' is not supported.");
+                    throw new NotSupportedException($"File type '{fileExtension}' is not supported.");
             }
         }
     }
