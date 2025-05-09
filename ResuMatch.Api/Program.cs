@@ -1,32 +1,40 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Extensions.AspNetCore.Configuration.Secrets;
-using ResuMatch.Api.Data.MatchResultsDataContext;
-using ResuMatch.Api.Data.JobDescriptionsDataContext;
-using MongoDB.Driver;
-using ResuMatch.Api.Repositories.JobDescriptionRepository;
-using ResuMatch.Api.Repositories.ResumeRepository;
-using ResuMatch.Api.Repositories.MatchResultRepository;
+
+
+using ResuMatch.Api.Data;
+using ResuMatch.Api.Models.Configurations;
+using ResuMatch.Api.Repositories;
+using ResuMatch.Api.Services.Concretes;
+using ResuMatch.Api.Services.FileProccessing.Concretes;
+using ResuMatch.Api.Services.FileProccessing.Interfaces;
+using ResuMatch.Api.Services.Interfaces;
+using SixLabors.ImageSharp.Processing;
 
 var builder = WebApplication.CreateBuilder(args);
-var keyVaultName = builder.Configuration["KeyVaultName"];  
-var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
-var secretClient = new SecretClient(keyVaultUri, new DefaultAzureCredential());
-builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-builder.Services.AddSingleton(new SecretClient(keyVaultUri, new DefaultAzureCredential()));
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.Configure<OpenRouterConfig>(options =>
+{
+    options.ApiKey = builder.Configuration["OpenRouter:ApiKey"];
+    options.Model = builder.Configuration["OpenRouter:Model"];
+    options.Endpoint = builder.Configuration["OpenRouter:Endpoint"];
+});
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAIService, OpenRouterAIService>(); // Make sure you have this class
+builder.Services.AddScoped<IResumeAnalysisService, ResumeAnalysisService>();
+// builder.Services.AddScoped<IFileProcessor, PdfFileProcessor>(); // Register PdfFileProcessor
+builder.Services.AddScoped<IFileProcessorFactory, FileProcessorFactory>(); // Register the factory
+builder.Services.AddScoped<ISkillMatcher, SkillMatcher>(); // Register SkillMatcher
+builder.Services.AddScoped<IAnalysisService, AnalysisService>(); // Register AnalysisService
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddLogging();
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IResumesContext, ResumesContext>();
-builder.Services.AddScoped<IMatchResultsContext, MatchResultsContext>();
-builder.Services.AddScoped<IJobDescriptionsDataContext, JobDescriptionsDataContext>();
 
-builder.Services.AddScoped<IJobDescriptionRepository, JobDescriptionRepository>();
-builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
-builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>();
+
 
 var app = builder.Build();
 
