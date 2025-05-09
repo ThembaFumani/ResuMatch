@@ -48,7 +48,9 @@ namespace ResuMatch.Api.Services.Concretes
             try
             {
                 using var httpClient = _httpClientFactory.CreateClient();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_openRouterConfig.ApiKey}");
                 var response = await httpClient.PostAsync(_openRouterConfig.Endpoint, new StringContent(json, Encoding.UTF8, "application/json"));
+                
                 if (!response.IsSuccessStatusCode)
                     {
                         string errorContent = await response.Content.ReadAsStringAsync();

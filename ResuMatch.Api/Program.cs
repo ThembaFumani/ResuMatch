@@ -11,8 +11,12 @@ using SixLabors.ImageSharp.Processing;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.Configure<OpenRouterConfig>(builder.Configuration.GetSection("OpenRouter"));
-
+builder.Services.Configure<OpenRouterConfig>(options =>
+{
+    options.ApiKey = builder.Configuration["OpenRouter:ApiKey"];
+    options.Model = builder.Configuration["OpenRouter:Model"];
+    options.Endpoint = builder.Configuration["OpenRouter:Endpoint"];
+});
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAIService, OpenRouterAIService>(); // Make sure you have this class
