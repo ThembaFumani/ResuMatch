@@ -13,16 +13,22 @@
       "storage"
     ],
     "host_permissions": [
-      "http://localhost:8000/*"  
+      "http://localhost:5250/*",
+      "https://*.linkedin.com/jobs/view/*",
+      "https://*.indeed.com/view/*",
+      "https://*.glassdoor.com/partner/jobListing.htm*"
     ],
     "content_scripts": [
       {
         "matches": [
           "https://*.linkedin.com/jobs/view/*",
           "https://*.indeed.com/view/*",
-          "https://*.glassdoor.com/partner/jobListing.htm*" 
+          "https://*.glassdoor.com/partner/jobListing.htm*"
         ],
         "js": ["content.js"]
       }
-    ]
+    ],
+    "background": {
+      "service_worker": "background.js"
+    }
   }

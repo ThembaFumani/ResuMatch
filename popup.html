@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ResuMatch</title>
+    <style>
+body {
+  font-family: sans-serif;
+  width: 300px;
+  padding: 10px;
+}
+
+h1 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+#fileInput {
+  margin-bottom: 10px;
+}
+
+#analyzeButton,
+#loadingButton {
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+#analyzeButton:hover {
+  background-color: #367c39;
+}
+
+#loadingButton {
+  background-color: #ddd;
+  color: #666;
+  cursor: not-allowed;
+}
+
+#results {
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  word-wrap: break-word;
+}
+
+#error {
+  color: red;
+  margin-top: 10px;
+  border: 1px solid red;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #ffe0e0;
+}
+    </style>
+  </head>
+  <body>
+    <h1>ResuMatch</h1>
+    <input type="file" id="fileInput" accept=".pdf" />
+    <button id="analyzeButton">Analyze Resume</button>
+    <button id="loadingButton" style="display: none;">Loading...</button>
+    <div id="results" style="display: none;"></div>
+    <div id="error" style="display: none;"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
