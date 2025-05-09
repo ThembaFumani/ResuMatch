@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "ResuMatch Analyzer",
+    "version": "1.0.0",
+    "description": "Analyzes job descriptions with your resume.",
+    "action": {
+      "default_popup": "popup.html",
+      "default_title": "ResuMatch"
+    },
+    "permissions": [
+      "activeTab",
+      "scripting",
+      "storage"
+    ],
+    "host_permissions": [
+      "http://localhost:8000/*"  
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*.linkedin.com/jobs/view/*",
+          "https://*.indeed.com/view/*",
+          "https://*.glassdoor.com/partner/jobListing.htm*" 
+        ],
+        "js": ["content.js"]
+      }
+    ]
+  }
