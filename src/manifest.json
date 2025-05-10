@@ -8,9 +8,9 @@
       "default_title": "ResuMatch"
     },
     "permissions": [
-      "activeTab",
       "scripting",
-      "storage"
+      "storage",
+      "tabs"
     ],
     "host_permissions": [
       "http://localhost:5250/*",
@@ -21,11 +21,10 @@
     "content_scripts": [
       {
         "matches": [
-          "https://*.linkedin.com/jobs/view/*",
-          "https://*.indeed.com/view/*",
-          "https://*.glassdoor.com/partner/jobListing.htm*"
+          "https://*.linkedin.com/jobs/view/*"
         ],
-        "js": ["content.js"]
+        "js": ["content.js"],
+        "run_at": "document_idle"
       }
     ],
     "background": {
