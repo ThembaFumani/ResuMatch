@@ -1,0 +1,6 @@
+@ResuMatch.Auth_HostAddress = http://localhost:5185
+
+GET {{ResuMatch.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
