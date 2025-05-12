@@ -30,7 +30,7 @@ namespace ResuMatch.Api.Repositories
             _context = context;
         }
 
-         public async Task StoreAnalysisResult(AnalysisRequest request, AnalysisResponse result, string filePath)
+         public async Task StoreAnalysisResult(AnalysisRequest request, AnalysisResult result, string filePath)
         {
             // Use MongoDB through MongoDbContext
             _logger.LogInformation("Storing analysis result in MongoDB for file: {FilePath}", filePath);
@@ -46,7 +46,7 @@ namespace ResuMatch.Api.Repositories
 
             try
             {
-                await _context.Resumes.InsertOneAsync(resumeData);
+                await _context.ResumeData.InsertOneAsync(resumeData);
                 _logger.LogInformation("Analysis result stored successfully in MongoDB.");
             }
             catch (Exception ex)

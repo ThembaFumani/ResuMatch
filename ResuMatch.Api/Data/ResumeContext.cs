@@ -7,10 +7,10 @@ namespace ResuMatch.Api.Data
     {
         public ResumeContext(IConfiguration configuration)
         {
-            var client = new MongoClient(configuration.GetValue<string>("MongoDB:ConnectionString"));
-            var database = client.GetDatabase(configuration.GetValue<string>("MongoDB:DatabaseName"));
-            Resumes = database.GetCollection<ResumeData>(configuration.GetValue<string>("MongoDB:Resumes"));
+            var client = new MongoClient(configuration.GetValue<string>("DatabaseSettings:ConnectionString:Dev"));
+            var database = client.GetDatabase(configuration.GetValue<string>("DatabaseSettings:DatabaseName"));
+            ResumeData = database.GetCollection<ResumeData>(configuration.GetValue<string>("DatabaseSettings:Collections:ResumeData"));
         }
-        public IMongoCollection<ResumeData> Resumes { get; }
+        public IMongoCollection<ResumeData> ResumeData { get; }
     }
 }

@@ -35,46 +35,86 @@ namespace ResuMatch.Api.Services.Concretes
                 _logger.LogInformation("Upload directory created: {UploadDirectory}", _uploadDirectory);
             }
         }
-        
-        public async Task<AnalysisResponse> ProcessResumeAsync(IFormFile file, string jobDescription)
+
+        public async Task<AnalysisResult> ProcessResumeAsync(IFormFile file, string jobDescription)
         {
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            string filePath = null;
+            try
             {
-               await file.CopyToAsync(stream);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+                filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                _logger.LogInformation("File uploaded successfully: {FilePath}", filePath);
+
+                IFileProcessor fileProcessor = _fileProcessorFactory.CreateProcessor(filePath);
+                if (fileProcessor == null)
+                {
+                    throw new InvalidOperationException("File processor is not initialized.");
+                }
+                var extractedResumeText = await fileProcessor.ExtractTextAsync(filePath);
+                _logger.LogInformation("Text extracted successfully from file: {FilePath}", filePath);
+
+                var resumeSkillsResponse = await _aiService.ExtractSkillsAsync(extractedResumeText);
+                _logger.LogInformation("Skills extracted from resume using AI.");
+
+                var jobDescriptionResponse = await _aiService.ExtractSkillsAsync(jobDescription);
+                _logger.LogInformation("Skills extracted successfully from AI service.");
+
+                var resumeSkills = JsonSerializer.Deserialize<string[]>(resumeSkillsResponse)?.ToList() ?? new List<string>();
+                var jobDescriptionSkills = JsonSerializer.Deserialize<string[]>(jobDescriptionResponse)?.ToList() ?? new List<string>();
+
+                var matchedSkillsResult = _skillMatcher.MatchSkills(resumeSkills, jobDescriptionSkills);
+
+                // **Generate summary of the matching results**
+                var summaryResponse = await _aiService.ExtractSummaryAsync(new string[] {
+                    $"Extracted Skills from Resume: {string.Join(", ", matchedSkillsResult.ExtractedResumeSkills)}",
+                    $"Required Skills from Job Description: {string.Join(", ", matchedSkillsResult.ExtractedJobDescriptionSkills)}",
+                    $"Matching Skills: {string.Join(", ", matchedSkillsResult.MatchingSkills)}",
+                    $"Missing Skills: {string.Join(", ", matchedSkillsResult.MissingSkills)}",
+                    $"Match Score: {matchedSkillsResult.MatchScore}",
+                    "Based on this analysis, write a concise summary (1-2 sentences) for a job seeker, highlighting the alignment between their skills and the job requirements, and also mentioning any significant gaps."
+                });
+
+                string summary = JsonSerializer.Deserialize<string[]>(summaryResponse)?.FirstOrDefault() ?? string.Empty;
+
+                var analysisRequest = new AnalysisRequest
+                {
+                    ResumeText = extractedResumeText,
+                    JobDescriptionText = jobDescription,
+                };
+                //await _analysisService.StoreAnalysisResultAsync(analysisRequest, matchedSkillsResult, filePath);
+
+                // Create and return the final AnalysisResponse with the summary
+                return new AnalysisResult
+                {
+                    MatchScore = matchedSkillsResult.MatchScore,
+                    MatchingSkills = matchedSkillsResult.MatchingSkills,
+                    MissingSkills = matchedSkillsResult.MissingSkills,
+                    Summary = summary, 
+                    ExtractedResumeSkills = matchedSkillsResult.ExtractedResumeSkills,
+                    ExtractedJobDescriptionSkills = matchedSkillsResult.ExtractedJobDescriptionSkills 
+                };
             }
-            _logger.LogInformation("File uploaded successfully: {FilePath}", filePath);
-
-            IFileProcessor fileProcessor = _fileProcessorFactory.CreateProcessor(filePath);
-            if (fileProcessor == null)
+            finally
             {
-                throw new InvalidOperationException("File processor is not initialized.");
+                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                        _logger.LogInformation("Uploaded file deleted successfully: {FilePath}", filePath);
+                    }
+                    catch (IOException ex)
+                    {
+                        _logger.LogError(ex, "Error deleting uploaded file: {FilePath}", filePath);
+                    }
+                }
             }
-            var extractedResumeText = await fileProcessor.ExtractTextAsync(filePath);
-            _logger.LogInformation("Text extracted successfully from file: {FilePath}", filePath);
-
-            var resumeSkillsResponse = await _aiService.ExtractSkillsAsync(extractedResumeText);
-            _logger.LogInformation("Skills extracted from resume using AI.");
-
-            var jobDescriptionResponse = await _aiService.ExtractSkillsAsync(jobDescription);
-            _logger.LogInformation("Skills extracted successfully from AI service.");
-
-            var resumeSkills = JsonSerializer.Deserialize<AIResponse>(resumeSkillsResponse)?.Choices[0]?.Message?.Content.Split(", ", StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
-            var jobDescriptionSkills = JsonSerializer.Deserialize<AIResponse>(jobDescriptionResponse)?.Choices[0]?.Message?.Content.Split(", ", StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>();
-            
-            var matchedSkills = _skillMatcher.MatchSkills(resumeSkills, jobDescriptionSkills);
-
-            var analysisRequest = new AnalysisRequest
-            {
-                ResumeText = extractedResumeText,
-                JobDescriptionText = jobDescription,
-            };
-            //await _analysisService.StoreAnalysisResultAsync(analysisRequest, matchedSkills, filePath);
-
-            return matchedSkills;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace ResuMatch.Api.Data
 {
     public interface IResumeContext
     {
-        IMongoCollection<ResumeData> Resumes { get; }
+        IMongoCollection<ResumeData> ResumeData { get; }
     }
 }

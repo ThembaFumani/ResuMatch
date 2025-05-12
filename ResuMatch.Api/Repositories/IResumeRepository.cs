@@ -8,7 +8,7 @@ namespace ResuMatch.Api.Repositories
 {
     public interface IResumeRepository
     {
-        Task StoreAnalysisResult(AnalysisRequest request, AnalysisResponse result, string filePath);
+        Task StoreAnalysisResult(AnalysisRequest request, AnalysisResult result, string filePath);
         Task<string> GetSkillsFromOpenRouter(string jobDescription);
     }
 }

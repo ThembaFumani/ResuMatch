@@ -13,7 +13,7 @@ namespace ResuMatch.Api.Services.Concretes
         private readonly ILogger<AnalysisService>? _logger;
         private readonly IResumeRepository? _resumeRepository;
 
-        public async Task StoreAnalysisResultAsync(AnalysisRequest request, AnalysisResponse result, string filePath)
+        public async Task StoreAnalysisResultAsync(AnalysisRequest request, AnalysisResult result, string filePath)
         {
             _logger?.LogInformation("Storing analysis result using AnalysisService.");
             if (_resumeRepository == null)

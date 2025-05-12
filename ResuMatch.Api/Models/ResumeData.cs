@@ -15,7 +15,7 @@ namespace ResuMatch.Api.Models
         public string? FilePath { get; set; }
         public string? ResumeText { get; set; }
         public string? JobDescriptionText { get; set; }
-        public AnalysisResponse? AnalysisResult { get; set; }
+        public AnalysisResult? AnalysisResult { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
