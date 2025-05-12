@@ -81,12 +81,21 @@ function sendDataToBackend(file, jobDescription) {
 
 function displayResults(results) {
   resultsDiv.innerHTML = ''; // Clear previous results
-
+  console.log('Results received:', results);
   if (results && typeof results === 'object') {
     if (results.matchScore !== undefined) {
       const scoreElement = document.createElement('p');
       scoreElement.textContent = `Match Score: ${results.matchScore}`;
       resultsDiv.appendChild(scoreElement);
+    }
+
+    if (results.summary) {
+      const summaryTitle = document.createElement('h3');
+      summaryTitle.textContent = 'Summary:';
+      resultsDiv.appendChild(summaryTitle);
+      const summaryElement = document.createElement('p');
+      summaryElement.textContent = results.summary;
+      resultsDiv.appendChild(summaryElement);
     }
 
     if (results.matchingSkills && Array.isArray(results.matchingSkills) && results.matchingSkills.length > 0) {
@@ -114,6 +123,33 @@ function displayResults(results) {
       });
       resultsDiv.appendChild(skillsList);
     }
+
+    if (results.extractedResumeSkills && Array.isArray(results.extractedResumeSkills) && results.extractedResumeSkills.length > 0) {
+      const extractedResumeSkillsTitle = document.createElement('h3');
+      extractedResumeSkillsTitle.textContent = 'Extracted Resume Skills:';
+      resultsDiv.appendChild(extractedResumeSkillsTitle);
+      const skillsList = document.createElement('ul');
+      results.extractedResumeSkills.forEach(skill => {
+        const listItem = document.createElement('li');
+        listItem.textContent = skill;
+        skillsList.appendChild(listItem);
+      });
+      resultsDiv.appendChild(skillsList);
+    }
+
+    if (results.extractedJobDescriptionSkills && Array.isArray(results.extractedJobDescriptionSkills) && results.extractedJobDescriptionSkills.length > 0) {
+      const extractedJobDescriptionSkillsTitle = document.createElement('h3');
+      extractedJobDescriptionSkillsTitle.textContent = 'Required Job Skills:';
+      resultsDiv.appendChild(extractedJobDescriptionSkillsTitle);
+      const skillsList = document.createElement('ul');
+      results.extractedJobDescriptionSkills.forEach(skill => {
+        const listItem = document.createElement('li');
+        listItem.textContent = skill;
+        skillsList.appendChild(listItem);
+      });
+      resultsDiv.appendChild(skillsList);
+    }
+
   } else {
     resultsDiv.textContent = "Error: Invalid response format.";
   }
