@@ -72,10 +72,14 @@ namespace ResuMatch.Api.Services.Concretes
 
                 // **Generate summary of the matching results**
                 var summaryResponse = await _aiService.ExtractSummaryAsync(new string[] {
-                    $"Match Score: {matchedSkillsResult.MatchScore}",
+                    $"Extracted Skills from Resume: {string.Join(", ", matchedSkillsResult.ExtractedResumeSkills)}",
+                    $"Required Skills from Job Description: {string.Join(", ", matchedSkillsResult.ExtractedJobDescriptionSkills)}",
                     $"Matching Skills: {string.Join(", ", matchedSkillsResult.MatchingSkills)}",
-                    $"Missing Skills: {string.Join(", ", matchedSkillsResult.MissingSkills)}"
+                    $"Missing Skills: {string.Join(", ", matchedSkillsResult.MissingSkills)}",
+                    $"Match Score: {matchedSkillsResult.MatchScore}",
+                    "Based on this analysis, write a concise summary (1-2 sentences) for a job seeker, highlighting the alignment between their skills and the job requirements, and also mentioning any significant gaps."
                 });
+
                 string summary = JsonSerializer.Deserialize<string[]>(summaryResponse)?.FirstOrDefault() ?? string.Empty;
 
                 var analysisRequest = new AnalysisRequest
@@ -91,7 +95,9 @@ namespace ResuMatch.Api.Services.Concretes
                     MatchScore = matchedSkillsResult.MatchScore,
                     MatchingSkills = matchedSkillsResult.MatchingSkills,
                     MissingSkills = matchedSkillsResult.MissingSkills,
-                    Summary = summary // Include the AI-generated summary
+                    Summary = summary, 
+                    ExtractedResumeSkills = matchedSkillsResult.ExtractedResumeSkills,
+                    ExtractedJobDescriptionSkills = matchedSkillsResult.ExtractedJobDescriptionSkills 
                 };
             }
             finally

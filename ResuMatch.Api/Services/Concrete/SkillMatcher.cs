@@ -22,7 +22,9 @@ namespace ResuMatch.Api.Services.Concretes
             {
                 MatchScore = matchScore,
                 MatchingSkills = matchingSkills,
-                MissingSkills = missingSkills
+                MissingSkills = missingSkills,
+                ExtractedResumeSkills = resumeSkills,
+                ExtractedJobDescriptionSkills = jobDescriptionSkills,
             };
         }
     }
