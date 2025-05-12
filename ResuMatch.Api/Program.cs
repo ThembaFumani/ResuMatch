@@ -25,6 +25,8 @@ builder.Services.AddScoped<IResumeAnalysisService, ResumeAnalysisService>();
 builder.Services.AddScoped<IFileProcessorFactory, FileProcessorFactory>(); // Register the factory
 builder.Services.AddScoped<ISkillMatcher, SkillMatcher>(); // Register SkillMatcher
 builder.Services.AddScoped<IAnalysisService, AnalysisService>(); // Register AnalysisService
+builder.Services.AddScoped<IResumeRepository, ResumeRepository>(); // Register ResumeRepository
+builder.Services.AddScoped<IResumeContext, ResumeContext>(); // Register ResumeContext
 
 
 

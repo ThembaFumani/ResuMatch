@@ -8,6 +8,6 @@ namespace ResuMatch.Api.Services.Interfaces
 {
     public interface IAnalysisService
     {
-        Task StoreAnalysisResultAsync(AnalysisRequest request, AnalysisResponse result, string filePath);
+        Task StoreAnalysisResultAsync(AnalysisRequest request, AnalysisResult result, string filePath);
     }
 }
