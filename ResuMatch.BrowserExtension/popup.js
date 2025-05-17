@@ -89,6 +89,15 @@ function displayResults(results) {
       resultsDiv.appendChild(scoreElement);
     }
 
+    if (results.summary) { // Check if the summary exists
+      const summaryTitle = document.createElement('h3');
+      summaryTitle.textContent = 'Summary:';
+      resultsDiv.appendChild(summaryTitle);
+      const summaryElement = document.createElement('p');
+      summaryElement.textContent = results.summary;
+      resultsDiv.appendChild(summaryElement);
+    }
+
     if (results.matchingSkills && Array.isArray(results.matchingSkills) && results.matchingSkills.length > 0) {
       const matchingSkillsTitle = document.createElement('h3');
       matchingSkillsTitle.textContent = 'Matching Skills:';
