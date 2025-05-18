@@ -4,6 +4,6 @@ namespace ResuMatch.Pipelines
 {
     public interface IResumeAnalysisPipeline
     {
-        Task<ResumeAnalysisContext> ExecuteAsync(ResumeAnalysisContext context);
+        Task<ResumeAnalysisPipelineResult> ExecuteAsync(ResumeAnalysisContext context);
     }
 }
