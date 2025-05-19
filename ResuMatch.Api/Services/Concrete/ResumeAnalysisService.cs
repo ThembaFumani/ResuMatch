@@ -1,6 +1,5 @@
 using System.Text.Json;
 using ResuMatch.Api.Models;
-using ResuMatch.Api.Models.Configurations;
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
 using ResuMatch.Api.Services.Interfaces;
 using IFileProcessor = ResuMatch.Api.Services.FileProccessing.Interfaces.IFileProcessor;
