@@ -1,26 +1,41 @@
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
 using ResuMatch.Pipelines;
 
-public class ExtractResumeTextStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisContext>
+public class ExtractResumeTextStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
 {
-    private readonly IFileProcessor _fileProcessor;
+    private readonly IFileProcessorFactory _fileProcessorFactory;
     private readonly ILogger<ExtractResumeTextStep> _logger;
-    public ExtractResumeTextStep(IFileProcessor fileProcessorFactory, ILogger<ExtractResumeTextStep> logger)
+    public ExtractResumeTextStep(IFileProcessorFactory fileProcessorFactory, ILogger<ExtractResumeTextStep> logger)
     {
-        _fileProcessor = fileProcessorFactory;
+        _fileProcessorFactory = fileProcessorFactory;
         _logger = logger;
     }
 
-    public Task<ResumeAnalysisContext> ProcessAsync(ResumeAnalysisContext context)
+    public async Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
     {
-        // IFileProcessor fileProcessor = _fileProcessor.CreateProcessor(context.FilePath);
-        // if (fileProcessor == null)
-        // {
-        //     throw new InvalidOperationException("File processor is not initialized.");
-        // }
-        // context.ExtractedResumeText = await _fileProcessor.ExtractTextAsync(context.FilePath);
-        // _logger.LogInformation("Text extracted successfully from file: {FilePath}", context.FilePath);
-        // return context;
-        throw new NotImplementedException("File processing is not implemented yet.");
+        _logger.LogInformation("Starting text extraction from file: {FilePath}", context.FilePath);
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context), "ResumeAnalysisContext cannot be null.");
+        }
+        if (string.IsNullOrEmpty(context.FilePath))
+        {
+            throw new ArgumentException("File path cannot be null or empty.", nameof(context.FilePath));
+        }
+        if (string.IsNullOrEmpty(context.JobDescription))
+        {
+            throw new ArgumentException("Job description cannot be null or empty.", nameof(context.JobDescription));
+        }
+
+        _logger.LogInformation("Extracting text from file: {FilePath}", context.FilePath);
+         IFileProcessor fileProcessor = _fileProcessorFactory.CreateProcessor(context.FilePath);
+        if (fileProcessor == null)
+        {
+            throw new InvalidOperationException("File processor is not initialized.");
+        }
+        context.ExtractedResumeText = await fileProcessor.ExtractTextAsync(context.FilePath);
+        _logger.LogInformation("Text extracted successfully from file: {FilePath}", context.FilePath);
+
+        return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
     }
 }
