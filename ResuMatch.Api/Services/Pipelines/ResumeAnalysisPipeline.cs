@@ -10,7 +10,7 @@ public class ResumeAnalysisPipeline : IResumeAnalysisPipeline
         _logger = logger;
     }
 
-    public async Task<ResumeAnalysisPipelineResult> ExecuteAsync(ResumeAnalysisContext context)
+    public async Task<ResumeAnalysisContext> ExecuteAsync(ResumeAnalysisContext context)
     {
         foreach (var step in _steps)
         {
@@ -22,7 +22,7 @@ public class ResumeAnalysisPipeline : IResumeAnalysisPipeline
             }
         }
 
-        return new ResumeAnalysisPipelineResult 
+        return new ResumeAnalysisContext 
         {
             AnalysisResult = context.AnalysisResult
         };
