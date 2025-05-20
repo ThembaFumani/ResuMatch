@@ -3,7 +3,7 @@ using ResuMatch.Api.Models;
 
 namespace ResuMatch.Pipelines
 {
-    public class ResumeAnalysisContext
+    public class PipelineContext
     {
         public IFormFile? File { get; set; }
         public string? FilePath { get; set; }
@@ -17,7 +17,7 @@ namespace ResuMatch.Pipelines
         public string? Error { get; set; } 
     }
 
-    public class ResumeAnalysisPipelineResult
+    public class PipelineResult
     {
         public AnalysisResult? AnalysisResult { get; set; }
     }

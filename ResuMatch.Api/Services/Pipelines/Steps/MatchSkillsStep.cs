@@ -1,6 +1,6 @@
 using ResuMatch.Pipelines;
 
-public class MatchSkillsStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
+public class MatchSkillsStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly ILogger<MatchSkillsStep> _logger;
 
@@ -9,12 +9,12 @@ public class MatchSkillsStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext
             _logger = logger;
         }
 
-        public Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
+        public Task<PipelineResult> ProcessAsync(PipelineContext context)
         {
             if (context.ResumeSkills == null || context.JobDescriptionSkills == null)
             {
                 context.Error = "Cannot match skills.  ResumeSkills or JobDescriptionSkills is null.";
-                return Task.FromResult(new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult });
+                return Task.FromResult(new PipelineResult { AnalysisResult = context.AnalysisResult });
             }
 
             context.MatchingSkills = context.ResumeSkills
@@ -28,6 +28,6 @@ public class MatchSkillsStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext
 
             _logger.LogInformation("Skills matched.");
             
-            return Task.FromResult(new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult });
+            return Task.FromResult(new PipelineResult { AnalysisResult = context.AnalysisResult });
         }
 }

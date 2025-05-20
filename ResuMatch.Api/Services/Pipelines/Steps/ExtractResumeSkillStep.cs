@@ -1,7 +1,7 @@
 using ResuMatch.Api.Services.Interfaces;
 using ResuMatch.Pipelines;
 
-public class ExtractResumeSkillStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
+public class ExtractResumeSkillStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly ILogger<ExtractResumeSkillStep> _logger;
     private readonly IAIService _aiService;
@@ -12,11 +12,11 @@ public class ExtractResumeSkillStep : IResumeAnalysisPipelineStep<ResumeAnalysis
         _aiService = aiService;
     }
 
-    public async Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
+    public async Task<PipelineResult> ProcessAsync(PipelineContext context)
     {
         if (context.ResumeSkills != null && context.ResumeSkills.Count > 0)
         {
-            return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+            return new PipelineResult { AnalysisResult = context.AnalysisResult };
         }
 
         if (context.ExtractedResumeText == null)
@@ -38,6 +38,6 @@ public class ExtractResumeSkillStep : IResumeAnalysisPipelineStep<ResumeAnalysis
         }
         context.ResumeSkills = skills;
 
-        return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+        return new PipelineResult { AnalysisResult = context.AnalysisResult };
     }
 }

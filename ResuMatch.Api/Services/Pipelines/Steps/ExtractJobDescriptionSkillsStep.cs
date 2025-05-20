@@ -1,7 +1,7 @@
 using ResuMatch.Api.Services.Interfaces;
 using ResuMatch.Pipelines;
 
-public class ExtractJobDescriptionSkillsStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
+public class ExtractJobDescriptionSkillsStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly IAIService _aiService;
     private readonly ILogger<ExtractJobDescriptionSkillsStep> _logger;
@@ -11,13 +11,13 @@ public class ExtractJobDescriptionSkillsStep : IResumeAnalysisPipelineStep<Resum
         _logger = logger;
     }
 
-    public async Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
+    public async Task<PipelineResult> ProcessAsync(PipelineContext context)
     {
         if (string.IsNullOrEmpty(context.JobDescription))
         {
             _logger.LogWarning("Job description is null or empty.");
             context.Error = "Job description is null or empty. Cannot extract skills.";
-            return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+            return new PipelineResult { AnalysisResult = context.AnalysisResult };
         }
 
         var skillsJson = await _aiService.ExtractSkillsAsync(context.JobDescription);
@@ -27,6 +27,6 @@ public class ExtractJobDescriptionSkillsStep : IResumeAnalysisPipelineStep<Resum
             .Cast<string>()
             .ToList();
 
-        return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+        return new PipelineResult { AnalysisResult = context.AnalysisResult };
     }
 }

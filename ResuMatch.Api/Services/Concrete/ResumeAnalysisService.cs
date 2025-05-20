@@ -6,10 +6,10 @@ namespace ResuMatch.Api.Services.Concretes
 {
     public class ResumeAnalysisService : IResumeAnalysisService
     {
-        private readonly IResumeAnalysisPipeline _pipeline;
+        private readonly IPipeline _pipeline;
         private readonly ILogger<ResumeAnalysisService>? _logger;
 
-        public ResumeAnalysisService(IResumeAnalysisPipeline pipeline, ILogger<ResumeAnalysisService>? logger)
+        public ResumeAnalysisService(IPipeline pipeline, ILogger<ResumeAnalysisService>? logger)
         {
             _pipeline = pipeline;
             _logger = logger;
@@ -17,13 +17,14 @@ namespace ResuMatch.Api.Services.Concretes
 
         public async Task<AnalysisResult> ProcessResumeAsync(IFormFile file, string jobDescription)
         {
-            var context = new ResumeAnalysisContext
+            var context = new PipelineContext
             {
                 File = file,
                 JobDescription = jobDescription
             };
 
-            context = await _pipeline.ExecuteAsync(context);
+            var pipelineResult = await _pipeline.ExecuteAsync(context);
+            context.AnalysisResult = pipelineResult.AnalysisResult;
 
             if (context == null)
             {

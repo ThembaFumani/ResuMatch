@@ -1,7 +1,7 @@
 using ResuMatch.Api.Services.Interfaces;
 using ResuMatch.Pipelines;
 
-public class GenerateSummaryStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
+public class GenerateSummaryStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly IAIService _aiService;
     private readonly ILogger<GenerateSummaryStep> _logger;
@@ -12,17 +12,17 @@ public class GenerateSummaryStep : IResumeAnalysisPipelineStep<ResumeAnalysisCon
         _aiService = aiService;
     }
 
-    public async Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
+    public async Task<PipelineResult> ProcessAsync(PipelineContext context)
     {
         if (context.MissingSkills == null || context.MissingSkills.Count == 0)
         {
             context.Error = "No missing skills found.";
-            return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+            return new PipelineResult { AnalysisResult = context.AnalysisResult };
         }
 
         var summary = await _aiService.ExtractSummaryAsync(context.MissingSkills.ToArray());
         var summaryValue = summary.RootElement.GetProperty("summary").GetString();
         context.AnalysisResult.Summary = summaryValue ?? string.Empty;
-        return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+        return new PipelineResult { AnalysisResult = context.AnalysisResult };
     }
 }

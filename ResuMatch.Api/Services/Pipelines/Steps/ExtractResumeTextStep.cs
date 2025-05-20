@@ -1,7 +1,7 @@
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
 using ResuMatch.Pipelines;
 
-public class ExtractResumeTextStep : IResumeAnalysisPipelineStep<ResumeAnalysisContext, ResumeAnalysisPipelineResult>
+public class ExtractResumeTextStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly IFileProcessorFactory _fileProcessorFactory;
     private readonly ILogger<ExtractResumeTextStep> _logger;
@@ -11,7 +11,7 @@ public class ExtractResumeTextStep : IResumeAnalysisPipelineStep<ResumeAnalysisC
         _logger = logger;
     }
 
-    public async Task<ResumeAnalysisPipelineResult> ProcessAsync(ResumeAnalysisContext context)
+    public async Task<PipelineResult> ProcessAsync(PipelineContext context)
     {
         _logger.LogInformation("Starting text extraction from file: {FilePath}", context.FilePath);
         if (context == null)
@@ -36,6 +36,6 @@ public class ExtractResumeTextStep : IResumeAnalysisPipelineStep<ResumeAnalysisC
         context.ExtractedResumeText = await fileProcessor.ExtractTextAsync(context.FilePath);
         _logger.LogInformation("Text extracted successfully from file: {FilePath}", context.FilePath);
 
-        return new ResumeAnalysisPipelineResult { AnalysisResult = context.AnalysisResult };
+        return new PipelineResult { AnalysisResult = context.AnalysisResult };
     }
 }
