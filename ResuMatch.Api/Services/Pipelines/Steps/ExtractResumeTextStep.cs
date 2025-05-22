@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Azure;
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
 using ResuMatch.Pipelines;
 
@@ -14,10 +15,12 @@ public class ExtractResumeTextStep : IPipelineStep<PipelineContext, PipelineResu
     public async Task<PipelineResult> ProcessAsync(PipelineContext context)
     {
         _logger.LogInformation("Starting text extraction from file: {FilePath}", context.FilePath);
+
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context), "ResumeAnalysisContext cannot be null.");
         }
+    
         if (string.IsNullOrEmpty(context.FilePath))
         {
             throw new ArgumentException("File path cannot be null or empty.", nameof(context.FilePath));

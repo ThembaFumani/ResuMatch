@@ -20,7 +20,8 @@ namespace ResuMatch.Api.Services.Concretes
             var context = new PipelineContext
             {
                 File = file,
-                JobDescription = jobDescription
+                JobDescription = jobDescription,
+                AnalysisResult = new AnalysisResult() 
             };
 
             var pipelineResult = await _pipeline.ExecuteAsync(context);

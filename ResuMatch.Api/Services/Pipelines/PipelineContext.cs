@@ -19,6 +19,6 @@ namespace ResuMatch.Pipelines
 
     public class PipelineResult
     {
-        public AnalysisResult? AnalysisResult { get; set; }
+        public AnalysisResult? AnalysisResult { get; set; } = new AnalysisResult();
     }
 }

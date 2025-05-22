@@ -2,9 +2,9 @@ using ResuMatch.Pipelines;
 
 public class Pipeline : IPipeline
 {
-    private readonly List<IPipelineStep<PipelineContext, PipelineResult>> _steps;
+    private readonly IEnumerable<IPipelineStep<PipelineContext, PipelineResult>> _steps;
     private readonly ILogger<Pipeline> _logger;
-    public Pipeline(List<IPipelineStep<PipelineContext, PipelineResult>> steps, ILogger<Pipeline> logger)
+    public Pipeline(IEnumerable<IPipelineStep<PipelineContext, PipelineResult>> steps, ILogger<Pipeline> logger)
     {
         _steps = steps;
         _logger = logger;
@@ -27,7 +27,7 @@ public class Pipeline : IPipeline
                 throw new InvalidOperationException("Pipeline execution failed.");
             }
             // Optionally update context if needed for next step
-            context = result.AnalysisResult != null ? new PipelineContext { AnalysisResult = result.AnalysisResult } : context;
+            //context = result.AnalysisResult != null ? new PipelineContext { AnalysisResult = result.AnalysisResult } : context;
         }
 
         return result;

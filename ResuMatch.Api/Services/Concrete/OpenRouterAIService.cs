@@ -45,7 +45,7 @@ namespace ResuMatch.Api.Services.Concretes
             return JsonDocument.Parse(JsonSerializer.Serialize(extractedSkills, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
         }
 
-        public async Task<JsonDocument> ExtractSummaryAsync(string[] details)
+        public async Task<string> ExtractSummaryAsync(string[] details)
         {
             _logger.LogInformation("Generating summary using OpenRouter...");
 
@@ -59,7 +59,7 @@ namespace ResuMatch.Api.Services.Concretes
             string summaryResponseContent = await CallOpenRouterAsync(summaryPrompt);
             JsonDocument summaryJson = JsonDocument.Parse(summaryResponseContent);
             string summary = summaryJson.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString()?.Trim() ?? string.Empty;
-            return JsonDocument.Parse(JsonSerializer.Serialize(new string[] { summary }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            return summary;
         }
 
         private async Task<string> CallOpenRouterAsync(string prompt)
