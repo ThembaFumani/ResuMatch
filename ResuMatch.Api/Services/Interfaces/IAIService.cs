@@ -9,6 +9,6 @@ namespace ResuMatch.Api.Services.Interfaces
     public interface IAIService
     {
         Task<JsonDocument> ExtractSkillsAsync(string jobDescription);
-        Task<JsonDocument> ExtractSummaryAsync(string[] extractedSkills);
+        Task<string> ExtractSummaryAsync(string[] extractedSkills);
     }
 }

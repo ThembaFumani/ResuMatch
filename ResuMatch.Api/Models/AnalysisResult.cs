@@ -13,5 +13,6 @@ namespace ResuMatch.Api.Models
         public string? Summary { get; set; }
         public List<string>? ExtractedResumeSkills { get; set; }
         public List<string>? ExtractedJobDescriptionSkills { get; set; }
+        public string? Error { get; internal set; }
     }
 }

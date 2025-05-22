@@ -17,10 +17,9 @@ namespace ResuMatch.Api.Services.FileProccessing.Concretes
             {
                 case ".pdf":
                     return new PdfFileProcessor(_loggerFactory?.CreateLogger<PdfFileProcessor>());
-                
-                // Add cases for other file types if needed
+                case ".docx":
                 default:
-                    throw new NotSupportedException($"File type '{fileExtension}' is not supported.");
+                    throw new UnsupportedFileTypeException($"File type '{fileExtension}' is not supported.");
             }
         }
     }
