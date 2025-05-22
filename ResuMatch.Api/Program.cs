@@ -21,23 +21,23 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IPipeline, Pipeline>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, SaveResumeFileStep>(provider =>
 {
-    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "uploads"); // This line is the key
+    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
     var logger = provider.GetRequiredService<ILogger<SaveResumeFileStep>>();
     return new SaveResumeFileStep(logger, uploadDirectory);
 });
+
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractResumeTextStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractResumeSkillStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractJobDescriptionSkillsStep>();
-builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, MatchSkillsStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, GenerateSummaryStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, CalculateScoreStep>();
 
-builder.Services.AddScoped<IAnalysisService, AnalysisService>(); // Register AnalysisService
+builder.Services.AddScoped<IAnalysisService, AnalysisService>();
 builder.Services.AddScoped<IFileProcessorFactory, FileProcessorFactory>();
 builder.Services.AddScoped<IResumeAnalysisService, ResumeAnalysisService>();
 builder.Services.AddScoped<IAIService, OpenRouterAIService>();
-builder.Services.AddScoped<IResumeRepository, ResumeRepository>(); // Register ResumeRepository
-builder.Services.AddScoped<IResumeContext, ResumeContext>(); // Register ResumeContext
+builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
+builder.Services.AddScoped<IResumeContext, ResumeContext>();
 
 
 builder.Services.AddEndpointsApiExplorer();
