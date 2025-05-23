@@ -27,7 +27,7 @@ public class Pipeline : IPipeline
                 throw new InvalidOperationException("Pipeline execution failed.");
             }
             // Optionally update context if needed for next step
-            //context = result.AnalysisResult != null ? new PipelineContext { AnalysisResult = result.AnalysisResult } : context;
+            context = result.AnalysisResult != null ? new PipelineContext { AnalysisResult = result.AnalysisResult } : context;
         }
 
         return result;

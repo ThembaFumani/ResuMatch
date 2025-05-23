@@ -29,6 +29,7 @@ builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, SaveR
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractResumeTextStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractResumeSkillStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, ExtractJobDescriptionSkillsStep>();
+builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, MatchSkillsStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, GenerateSummaryStep>();
 builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, CalculateScoreStep>();
 
