@@ -26,6 +26,9 @@ public class MatchSkillsStep :  IPipelineStep<PipelineContext, PipelineResult>
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
+            context.AnalysisResult.MatchingSkills = context.MatchingSkills;
+            context.AnalysisResult.MissingSkills = context.MissingSkills;
+
             _logger.LogInformation("Skills matched.");
             
             return Task.FromResult(new PipelineResult { AnalysisResult = context.AnalysisResult });

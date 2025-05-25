@@ -26,8 +26,6 @@ public class Pipeline : IPipeline
                 _logger.LogError("Pipeline execution failed at step: {Step}", step.GetType().Name);
                 throw new InvalidOperationException("Pipeline execution failed.");
             }
-            // Optionally update context if needed for next step
-            context = result.AnalysisResult != null ? new PipelineContext { AnalysisResult = result.AnalysisResult } : context;
         }
 
         return result;
