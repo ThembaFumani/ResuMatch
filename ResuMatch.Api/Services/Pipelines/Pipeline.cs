@@ -10,11 +10,6 @@ public class Pipeline : IPipeline
         _logger = logger;
     }
 
-    public void AddStep(IPipelineStep<PipelineContext, PipelineResult> step)
-    {
-        _steps.Append(step);
-    }
-
     public async Task<PipelineResult> ExecuteAsync(PipelineContext context)
     {
         PipelineResult result = null;
