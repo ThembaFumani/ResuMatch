@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ResuMatch.Api.Models;
 
 namespace ResuMatch.Pipelines

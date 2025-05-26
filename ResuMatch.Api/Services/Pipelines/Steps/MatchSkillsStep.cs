@@ -39,7 +39,6 @@ public class MatchSkillsStep :  IPipelineStep<PipelineContext, PipelineResult>
             string innerJsonContent = string.Empty;
             using (JsonDocument doc = JsonDocument.Parse(response))
             {
-                // Navigate to the 'content' field which holds the actual JSON string from the AI model
                 if (doc.RootElement.TryGetProperty("choices", out JsonElement choicesElement))
                 {
                     var choicesEnumerator = choicesElement.EnumerateArray();
@@ -53,21 +52,18 @@ public class MatchSkillsStep :  IPipelineStep<PipelineContext, PipelineResult>
                         }
                         else
                         {
-                            // Log an error if the expected structure is not found
                             _logger.LogError("AI response did not contain expected 'choices[0].message.content' structure. Raw response: {Response}", response);
                             throw new JsonException("AI response did not contain expected 'choices[0].message.content' structure.");
                         }
                     }
                     else
                     {
-                        // Log an error if the choices array is empty
                         _logger.LogError("AI response 'choices' array was empty. Raw response: {Response}", response);
                         throw new JsonException("AI response 'choices' array was empty.");
                     }
                 }
                 else
                 {
-                    // Log an error if the expected structure is not found
                     _logger.LogError("AI response did not contain expected 'choices[0].message.content' structure. Raw response: {Response}", response);
                     throw new JsonException("AI response did not contain expected 'choices[0].message.content' structure.");
                 }
@@ -78,14 +74,12 @@ public class MatchSkillsStep :  IPipelineStep<PipelineContext, PipelineResult>
                 throw new JsonException("AI response content was empty or null after extraction.");
             }
 
-            // Now parse the inner JSON string
             using (JsonDocument innerDoc = JsonDocument.Parse(innerJsonContent))
             {
                 var innerRoot = innerDoc.RootElement;
                 List<string> matchingSkills = new List<string>();
                 List<string> missingSkills = new List<string>();
 
-                // Now, these if statements will work correctly on the inner JSON's root
                 if (innerRoot.TryGetProperty("matching_skills", out JsonElement matchingSkillsElement) &&
                     matchingSkillsElement.ValueKind == JsonValueKind.Array)
                 {
@@ -113,7 +107,6 @@ public class MatchSkillsStep :  IPipelineStep<PipelineContext, PipelineResult>
                     _logger.LogWarning("AI response content did not contain 'missing_skills' array or it was not an array. Raw inner content: {InnerContent}", innerJsonContent);
                 }
 
-                // Assign the extracted skills to the AnalysisResult object in the context
                 context.AnalysisResult.MatchingSkills = matchingSkills.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 context.AnalysisResult.MissingSkills = missingSkills.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
             }
