@@ -32,7 +32,11 @@ public class ExtractResumeSkillStep : IPipelineStep<PipelineContext, PipelineRes
             {
                 if (element.ValueKind == System.Text.Json.JsonValueKind.String)
                 {
-                    skills.Add(element.GetString());
+                    var skill = element.GetString();
+                    if (!string.IsNullOrEmpty(skill))
+                    {
+                        skills.Add(skill);
+                    }
                 }
             }
         }

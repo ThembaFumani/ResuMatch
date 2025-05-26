@@ -1,5 +1,5 @@
 using ResuMatch.Pipelines;
-
+//todo: implementation might change or extended (depending if there's a need to save files locally) once MongoDB is integrated
 public class SaveResumeFileStep : IPipelineStep<PipelineContext, PipelineResult>
 {
     private readonly ILogger<SaveResumeFileStep> _logger;
@@ -23,7 +23,7 @@ public class SaveResumeFileStep : IPipelineStep<PipelineContext, PipelineResult>
             {
                 _logger.LogDebug("Attempting to save file. Upload directory: {UploadDirectory}", _uploadDirectory);
 
-                // Ensure the upload directory exists
+                
                 if (!Directory.Exists(_uploadDirectory))
                 {
                     Directory.CreateDirectory(_uploadDirectory);
@@ -31,12 +31,12 @@ public class SaveResumeFileStep : IPipelineStep<PipelineContext, PipelineResult>
                 }
 
                 var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(context.File.FileName);
-                context.FilePath = Path.Combine(_uploadDirectory, uniqueFileName); // Set FilePath in context
+                context.FilePath = Path.Combine(_uploadDirectory, uniqueFileName); 
 
                 _logger.LogDebug("Saving file to path: {FilePath}", context.FilePath);
                 using (var stream = new FileStream(context.FilePath, FileMode.Create))
                 {
-                    await context.File.CopyToAsync(stream); // Save the file
+                    await context.File.CopyToAsync(stream); 
                 }
                 _logger.LogInformation("File uploaded successfully: {FilePath}", context.FilePath);
                 return new PipelineResult { AnalysisResult = context.AnalysisResult };
@@ -47,7 +47,7 @@ public class SaveResumeFileStep : IPipelineStep<PipelineContext, PipelineResult>
                 context.Error = $"Error saving file: {ex.Message}";
                 return new PipelineResult { AnalysisResult = context.AnalysisResult };
             }
-            catch (Exception ex) // Catch any other unexpected exceptions
+            catch (Exception ex) 
             {
                 _logger.LogError(ex, "An unexpected error occurred while saving file: {FilePath}", context.FilePath);
                 context.Error = $"An unexpected error occurred: {ex.Message}";
