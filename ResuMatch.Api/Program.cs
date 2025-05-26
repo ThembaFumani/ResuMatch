@@ -1,6 +1,7 @@
 using ResuMatch.Api.Data;
 using ResuMatch.Api.Models.Configurations;
 using ResuMatch.Api.Repositories;
+using ResuMatch.Api.Services.Concrete;
 using ResuMatch.Api.Services.Concretes;
 using ResuMatch.Api.Services.FileProccessing.Concretes;
 using ResuMatch.Api.Services.FileProccessing.Interfaces;
@@ -36,6 +37,8 @@ builder.Services.AddScoped<IPipelineStep<PipelineContext, PipelineResult>, Calcu
 builder.Services.AddScoped<IAnalysisService, AnalysisService>();
 builder.Services.AddScoped<IFileProcessorFactory, FileProcessorFactory>();
 builder.Services.AddScoped<IResumeAnalysisService, ResumeAnalysisService>();
+builder.Services.AddSingleton<IPromptFileService, PromptFileService>(); 
+builder.Services.AddScoped<IPromptService, PromptService>();
 builder.Services.AddScoped<IAIService, OpenRouterAIService>();
 builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
 builder.Services.AddScoped<IResumeContext, ResumeContext>();
