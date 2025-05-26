@@ -20,7 +20,7 @@ public class GenerateSummaryStep : IPipelineStep<PipelineContext, PipelineResult
             return new PipelineResult { AnalysisResult = context.AnalysisResult };
         }
 
-        var summary = await _aiService.ExtractSummaryAsync(context.MissingSkills.ToArray());
+        var summary = await _aiService.GenerateSummaryAsync(context.MissingSkills.ToArray());
         if (context.AnalysisResult != null)
         {
             context.AnalysisResult.Summary = summary ?? string.Empty;
