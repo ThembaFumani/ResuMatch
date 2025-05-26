@@ -18,12 +18,6 @@ namespace ResuMatch.Api.Services.Concrete
         
         public async Task<PromptFileModel> LoadPromptFileAsync()
         {
-            // if (_promptFileModel != null)
-            // {
-            //     _logger.LogInformation("Prompt file model already loaded.");
-            //     return _promptFileModel;
-            // }
-
             var filePath = Path.Combine(_hostEnvironment.ContentRootPath,  "prompts.json");
             if (!File.Exists(filePath))
             {
@@ -33,13 +27,14 @@ namespace ResuMatch.Api.Services.Concrete
             try
             {
                 await using FileStream openStream = File.OpenRead(filePath);
-                _promptFileModel = await JsonSerializer.DeserializeAsync<PromptFileModel>(openStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var deserializedModel = await JsonSerializer.DeserializeAsync<PromptFileModel>(openStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                if (_promptFileModel == null)
+                if (deserializedModel == null)
                 {
                     _logger.LogError("Failed to deserialize prompt file at path: {FilePath}", filePath);
                     throw new InvalidOperationException("Failed to deserialize prompt file.");
                 }
+                _promptFileModel = deserializedModel;
                 _logger.LogInformation("Prompt file model loaded successfully from path: {FilePath}", filePath);
                 return _promptFileModel;
             }

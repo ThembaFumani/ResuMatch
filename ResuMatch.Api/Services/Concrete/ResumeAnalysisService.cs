@@ -17,30 +17,38 @@ namespace ResuMatch.Api.Services.Concretes
 
         public async Task<AnalysisResult> ProcessResumeAsync(IFormFile file, string jobDescription)
         {
-            var context = new PipelineContext
-            {
-                File = file,
-                JobDescription = jobDescription,
-                AnalysisResult = new AnalysisResult() 
-            };
-
-            var pipelineResult = await _pipeline.ExecuteAsync(context);
-            context.AnalysisResult = pipelineResult.AnalysisResult;
-
-            if (context == null)
-            {
-                _logger.LogError("Pipeline execution returned null context.");
-                throw new InvalidOperationException("Pipeline execution returned null context.");
-            }
-
-            if (context.Error != null)
-            {
-                _logger.LogError("Error processing resume: {ErrorMessage}", context.Error);
-                // Consider throwing an exception here or returning a specific error result
-                return new AnalysisResult { Error = context.Error }; // Or throw new Exception(context.Error);
-            }
-            _logger.LogInformation("Resume processed successfully.");
-            return context.AnalysisResult;
+           try
+           {
+             var context = new PipelineContext
+             {
+                 File = file,
+                 JobDescription = jobDescription,
+                 AnalysisResult = new AnalysisResult() 
+             };
+ 
+             var pipelineResult = await _pipeline.ExecuteAsync(context);
+             context.AnalysisResult = pipelineResult.AnalysisResult;
+ 
+             if (context == null)
+             {
+                 _logger.LogError("Pipeline execution returned null context.");
+                 throw new InvalidOperationException("Pipeline execution returned null context.");
+             }
+ 
+             if (context.Error != null)
+             {
+                 _logger.LogError("Error processing resume: {ErrorMessage}", context.Error);
+                
+                 return new AnalysisResult { Error = context.Error };
+             }
+             _logger.LogInformation("Resume processed successfully.");
+             return context.AnalysisResult ?? new AnalysisResult();
+           }
+           catch (Exception ex)
+           {
+            _logger?.LogError(ex, "An error occurred while processing the resume.");
+            throw;
+           }
         }
     }
 }

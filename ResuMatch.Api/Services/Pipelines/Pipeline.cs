@@ -12,7 +12,7 @@ public class Pipeline : IPipeline
 
     public async Task<PipelineResult> ExecuteAsync(PipelineContext context)
     {
-        PipelineResult result = null;
+        PipelineResult result = new PipelineResult(); 
         foreach (var step in _steps)
         {
             result = await step.ProcessAsync(context);

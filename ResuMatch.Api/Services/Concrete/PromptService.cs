@@ -1,10 +1,5 @@
-// ResuMatch.Api/Services/Concretes/PromptService.cs
 using ResuMatch.Api.Models;
 using ResuMatch.Api.Services.Interfaces;
-using Microsoft.Extensions.Logging; // Ensure this is present
-using System;
-using System.Linq; // Ensure this is present for string.Join
-using System.Threading.Tasks;
 
 namespace ResuMatch.Api.Services.Concretes
 {
@@ -30,14 +25,14 @@ namespace ResuMatch.Api.Services.Concretes
             return string.Format(_promptFileModel.ExtractSkills, text);
         }
 
-        public async Task<string> GetExtractSummaryPrompt(string[] details) // FIXED: Changed to string[]
+        public async Task<string> GetExtractSummaryPrompt(string[] details) 
         {
             await EnsurePromptsFileLoadedAsync();
             if (string.IsNullOrEmpty(_promptFileModel?.ExtractSummary))
             {
                 throw new InvalidOperationException("ExtractSummary prompt is not defined in the prompt file.");
             }
-            return string.Format(_promptFileModel.ExtractSummary, string.Join("\n", details)); // FIXED: Added string.Join here
+            return string.Format(_promptFileModel.ExtractSummary, string.Join("\n", details)); 
         }
 
         public async Task<string> GetMatchingSkillsAnalysisPrompt(List<string> resumeSkills, List<string> jobDescriptionSkills)
@@ -59,7 +54,7 @@ namespace ResuMatch.Api.Services.Concretes
             {
                 try
                 {
-                    _promptFileModel = await _promptFileService!.LoadPromptFileAsync(); // Consistent method name
+                    _promptFileModel = await _promptFileService!.LoadPromptFileAsync();
                 }
                 catch (Exception ex)
                 {
