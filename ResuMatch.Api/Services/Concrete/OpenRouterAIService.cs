@@ -62,6 +62,35 @@ namespace ResuMatch.Api.Services.Concretes
             return summary;
         }
 
+        public Task<string> GetMatchingSkillsAnalysisAsync(List<string> resumeSkills, List<string> jobDescriptionSkills)
+        {
+            var prompt = $@"
+            You are an expert at comparing skills from a resume against job description requirements.
+            Your goal is to identify two sets of skills:
+            1. Skills from the resume that *semantically match* skills required by the job description. Semantic matching means considering synonyms, different phrasings (e.g., 'C#' and 'C-Sharp'), or closely related concepts as matches.
+            2. Skills from the job description that are *missing* from the resume.
+
+            Provide your output strictly as a JSON object with two arrays: 'matching_skills' and 'missing_skills'.
+            Ensure all skills in the arrays are distinct and clearly formatted.
+
+            Resume Skills:
+            {string.Join(", ", resumeSkills)}
+
+            Job Description Skills:
+            {string.Join(", ", jobDescriptionSkills)}
+
+            Example JSON Output:
+            {{
+                ""matching_skills"": [""C#"", "".NET Core"", ""SQL"", ""Agile Methodologies"", ""Object-Oriented Programming""],
+                ""missing_skills"": [""React"", ""AWS Cloud""]
+            }}
+
+            Your JSON response:
+            ";
+
+            return CallOpenRouterAsync(prompt);
+        }
+
         private async Task<string> CallOpenRouterAsync(string prompt)
         {
             var requestBody = new

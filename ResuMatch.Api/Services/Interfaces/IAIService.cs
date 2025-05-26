@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ResuMatch.Api.Services.Interfaces
 {
@@ -10,5 +6,6 @@ namespace ResuMatch.Api.Services.Interfaces
     {
         Task<JsonDocument> ExtractSkillsAsync(string jobDescription);
         Task<string> ExtractSummaryAsync(string[] extractedSkills);
+        Task<string> GetMatchingSkillsAnalysisAsync(List<string> resumeSkills, List<string> jobDescriptionSkills);
     }
 }
