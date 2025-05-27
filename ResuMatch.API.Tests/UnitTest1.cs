@@ -1,4 +1,4 @@
-namespace ResuMatch.API.Tests;
+namespace ResuMatch.Api.Tests;
 
 public class UnitTest1
 {
